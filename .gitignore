@@ -3,6 +3,10 @@
 .vscode/
 *.swp
 
+# Fichiers locaux de l'assistant (non versionnés)
+.claude/
+CLAUDE.md
+
 # Système
 .DS_Store
 Thumbs.db
