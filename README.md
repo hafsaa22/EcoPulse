@@ -1,5 +1,9 @@
 # EcoPulse
 
+[![Pipeline GitLab](https://gitlab.com/hafsa-hounaoui/ecopulse/badges/main/pipeline.svg)](https://gitlab.com/hafsa-hounaoui/ecopulse/-/pipelines)
+
+Projet GitLab : [gitlab.com/hafsa-hounaoui/ecopulse](https://gitlab.com/hafsa-hounaoui/ecopulse)
+
 **Tableau de bord de mesure des performances d'une API REST.**
 
 EcoPulse expose trois endpoints REST de démonstration, mesure côté serveur le temps de traitement et la taille
@@ -11,6 +15,8 @@ indicateurs clés, tableau par endpoint et graphique des temps de réponse.
 
 Projet réalisé comme MVP full-stack, avec une attention portée à la qualité (tests automatisés, CI) et à la
 sobriété numérique (agrégats calculés en SQL, JSON compact, graphique sans bibliothèque).
+
+![Dashboard EcoPulse : trois boutons pour déclencher les endpoints fast, medium et slow, trois indicateurs (6 requêtes mesurées, 191 ms de temps de réponse moyen, 16,2 Ko de données échangées), un graphique en barres des temps de réponse où l'appel à slow culmine vers 640 ms, et un tableau par endpoint qui désigne slow comme le plus lent et le plus volumineux.](docs/dashboard.png)
 
 ---
 

@@ -3,7 +3,7 @@
 .vscode/
 *.swp
 
-# Fichiers locaux de l'assistant (non versionnés)
+# Fichiers locaux
 .claude/
 CLAUDE.md
 
