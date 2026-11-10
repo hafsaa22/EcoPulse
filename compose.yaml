@@ -1,0 +1,23 @@
+# Infrastructure locale d'EcoPulse : une base PostgreSQL de développement.
+# Lancement : docker compose up -d
+services:
+  database:
+    image: postgres:16-alpine
+    environment:
+      # Identifiants de DÉVELOPPEMENT uniquement (ne pas réutiliser en production).
+      POSTGRES_DB: ecopulse
+      POSTGRES_USER: ecopulse
+      POSTGRES_PASSWORD: ecopulse
+    ports:
+      # 5434 côté machine : 5432 et 5433 sont déjà pris par des PostgreSQL locaux.
+      - "5434:5432"
+    volumes:
+      - database_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "ecopulse", "-d", "ecopulse"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  database_data:
