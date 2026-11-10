@@ -1,0 +1,51 @@
+# Pipeline GitLab CI d'EcoPulse : tests backend + build frontend, à chaque push.
+
+stages:
+  - test
+
+# Tests fonctionnels Symfony contre une vraie base PostgreSQL.
+backend:tests:
+  stage: test
+  image: php:8.5-cli
+  services:
+    - name: postgres:16-alpine
+      alias: database
+  variables:
+    POSTGRES_DB: ecopulse_test
+    POSTGRES_USER: ecopulse
+    POSTGRES_PASSWORD: ecopulse
+    # Variable d'environnement réelle : prioritaire sur backend/.env.
+    # En environnement "test", Doctrine ajoute le suffixe _test au nom de base.
+    DATABASE_URL: "postgresql://ecopulse:ecopulse@database:5432/ecopulse?serverVersion=16&charset=utf8"
+    COMPOSER_CACHE_DIR: "$CI_PROJECT_DIR/.composer-cache"
+  cache:
+    key:
+      files:
+        - backend/composer.lock
+    paths:
+      - .composer-cache/
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq git unzip libpq-dev > /dev/null
+    - docker-php-ext-install -j"$(nproc)" pdo_pgsql > /dev/null
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --quiet
+    - cd backend
+    - composer install --no-interaction --no-progress --prefer-dist
+  script:
+    - php bin/console doctrine:database:create --env=test --if-not-exists
+    - php bin/console doctrine:migrations:migrate --env=test --no-interaction
+    - php bin/phpunit --testdox
+
+# Vérifie que le dashboard Nuxt compile en mode production.
+frontend:build:
+  stage: test
+  image: node:24
+  cache:
+    key:
+      files:
+        - frontend/package-lock.json
+    paths:
+      - .npm/
+  script:
+    - cd frontend
+    - npm ci --cache "$CI_PROJECT_DIR/.npm" --prefer-offline --no-audit --no-fund
+    - npm run build
